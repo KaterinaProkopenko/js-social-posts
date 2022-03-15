@@ -56,26 +56,34 @@ const posts = [
     }
 ];
 
-let arrayLikes = [];
+let arrayLikes=[];
 
 posts.forEach((element) => {
     createPost(element.author['image'], element.author['name'], element.created, element.content, element.media, element.likes);
-    arrayLikes.push(element.likes);
 });
 
-const button = document.querySelectorAll('a.like-button');
-console.log(button);
+const likeCounters = document.querySelectorAll(`.js-likes-counter`);
+const likeButtons = document.querySelectorAll(`.js-like-button`);
 
-button.forEach((element) => {
+for (let i = 0 ; i < likeButtons.length ; i++){
+    const element = likeButtons[i];
+
     console.log(element);
-    element.addEventListener('click', function() {
-        this.style.color = "red";
-        arrayLikes.forEach((element) => {
-            console.log(element + 1);
-        });
-    });
-});
+    element.addEventListener('click', (event) => {
+        event.preventDefault();
 
+        if ( element.classList.contains('like-button--liked') ){
+            element.classList.remove('like-button--liked');
+            likeCounters[i].innerHTML = parseInt(likeCounters[i].innerHTML) - 1;
+            arrayLikes.splice( arrayLikes.indexOf(likeButtons[i].getAttribute('data-postid') ));
+
+        } else {
+            element.classList.add('like-button--liked');
+            likeCounters[i].innerHTML = parseInt(likeCounters[i].innerHTML) + 1;
+            arrayLikes.push(likeButtons[i].getAttribute('data-postid'));
+        };
+    });
+};
 
 
 function createPost(imgProfile, name, date, text, img, likes) {
@@ -149,6 +157,3 @@ function createPost(imgProfile, name, date, text, img, likes) {
     likesJs.appendChild(likesCounter);
     likesCounter.innerHTML = `Piace a <b id="like-counter-1" class="js-likes-counter">${likes}</b> persone`;
 };
-
-
-
